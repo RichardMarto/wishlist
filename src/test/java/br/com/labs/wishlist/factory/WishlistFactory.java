@@ -14,7 +14,7 @@ public class WishlistFactory {
         if (size > 20) {
             throw new FullWishlistException(userId);
         } else {
-            final HashSet<String> products = new HashSet<String>();
+            final HashSet<String> products = new HashSet<>();
             final StringBuilder productIdBuilder = new StringBuilder();
             productIdBuilder.append(PRODUCT_ID_PREFIX);
             for (int i = 0; i < size; i++) {

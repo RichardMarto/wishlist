@@ -28,7 +28,7 @@ public class WishlistService {
 
     private static Supplier<Wishlist> createThenAdd(final String userId, final String productId) {
         return () -> {
-            final HashSet<String> products = new HashSet<String>();
+            final HashSet<String> products = new HashSet<>();
             products.add(productId);
             return Wishlist.builder().userId(userId).products(products).build();
         };
