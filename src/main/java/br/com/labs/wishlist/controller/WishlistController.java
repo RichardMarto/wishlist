@@ -26,9 +26,9 @@ public class WishlistController {
         return wishlistService.remove(userId, productId);
     }
 
-    @GetMapping("/all")
-    public List<String> getProducts(@RequestParam final String userId) {
-        return wishlistService.getProducts(userId);
+    @GetMapping
+    public WishlistDTO get(@RequestParam final String userId) {
+        return wishlistService.get(userId);
     }
 
     @GetMapping("/contains")

@@ -4,13 +4,9 @@ import br.com.labs.wishlist.model.Wishlist;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.data.mongodb.repository.Query;
 
-import java.util.List;
 import java.util.Optional;
 
 public interface WishlistRepository extends MongoRepository<Wishlist, String> {
-    @Query(value = "{ 'userId' : ?0 }", fields = "{ 'products' : 1 }")
-    List<String> getProducts(String userId);
-
     @Query(value = "{ 'userId' : ?0, 'products.productId' : ?1 }", fields = "{ 'products.productId' : 1 }")
     Optional<Wishlist> contains(String userId, String productId);
 

@@ -1,19 +1,20 @@
-package br.com.labs.wishlist.service;
+package br.com.labs.wishlist.unit;
 
 import br.com.labs.wishlist.exceptions.FullWishlistException;
 import br.com.labs.wishlist.factory.WishlistFactory;
 import br.com.labs.wishlist.model.Wishlist;
 import br.com.labs.wishlist.model.WishlistDTO;
 import br.com.labs.wishlist.repository.WishlistRepository;
+import br.com.labs.wishlist.service.WishlistService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.junit.runner.RunWith;
 import org.mockito.Mockito;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.mockito.junit.MockitoJUnitRunner;
 
-import java.util.List;
 import java.util.Optional;
 
-@SpringBootTest
+@RunWith(MockitoJUnitRunner.class)
 class WishlistServiceTest {
     private static final String USER_ID = "user_id_1";
 
@@ -46,7 +47,7 @@ class WishlistServiceTest {
         final Wishlist wishlist = wishlistFactory.build(USER_ID, size);
         final WishlistDTO wishlistDTO = WishlistDTO.builder().wishlist(wishlist).build();
 
-        setupForAddIfNotFull(wishlist, size);
+        setup(wishlist, size);
 
         final WishlistDTO foundWishlist = wishlistService.addIfNotFull(USER_ID, nextProductId);
         Assertions.assertEquals(wishlistDTO, foundWishlist);
@@ -61,7 +62,7 @@ class WishlistServiceTest {
         final Wishlist wishlist = wishlistFactory.build(USER_ID, size);
         final WishlistDTO wishlistDTO = WishlistDTO.builder().wishlist(wishlist).build();
 
-        setupForAddIfNotFull(wishlist, size);
+        setup(wishlist, size);
 
         final WishlistDTO foundWishlist = wishlistService.addIfNotFull(USER_ID, nextProductId);
         Assertions.assertEquals(wishlistDTO, foundWishlist);
@@ -69,16 +70,16 @@ class WishlistServiceTest {
         Assertions.assertEquals(expectedSize, foundWishlist.getProducts().size());
     }
 
-    private void setupForAddIfNotFull(final Wishlist wishlist, final long size, final Boolean contains) {
+    private void setup(final Wishlist wishlist, final long size, final Boolean contains) {
         Mockito.when(wishlistRepository.contains(Mockito.anyString(), Mockito.anyString()))
                 .thenReturn(ifContainsReturnsWishlist(wishlist, contains));
-        setupForAddIfNotFull(wishlist, size);
+        setup(wishlist, size);
     }
 
-    private void setupForAddIfNotFull(final Wishlist wishlist, final long size) {
+    private void setup(final Wishlist wishlist, final long size) {
         Mockito.when(wishlistRepository.findById(Mockito.anyString())).thenReturn(Optional.of(wishlist));
         Mockito.when(wishlistRepository.save(Mockito.any(Wishlist.class))).thenReturn(wishlist);
-        Mockito.when(wishlistRepository.getProducts(Mockito.anyString())).thenReturn(wishlist.getProducts().stream().toList());
+        Mockito.when(wishlistRepository.findById(Mockito.anyString())).thenReturn(Optional.of(wishlist));
         Mockito.when(wishlistRepository.count(Mockito.anyString())).thenReturn(size);
     }
 
@@ -88,7 +89,7 @@ class WishlistServiceTest {
         final String nextProductId = getNextProductId(size);
         final Wishlist wishlist = wishlistFactory.build(USER_ID, size);
 
-        setupForAddIfNotFull(wishlist, size);
+        setup(wishlist, size);
 
         Assertions.assertThrows(FullWishlistException.class, () -> wishlistService.addIfNotFull(USER_ID, nextProductId));
     }
@@ -100,7 +101,7 @@ class WishlistServiceTest {
         final Wishlist wishlist = wishlistFactory.build(USER_ID, size);
         final WishlistDTO wishlistDTO = WishlistDTO.builder().wishlist(wishlist).build();
 
-        setupForAddIfNotFull(wishlist, size);
+        setup(wishlist, size);
 
         final WishlistDTO foundWishlist = wishlistService.remove(USER_ID, nextProductId);
         Assertions.assertEquals(wishlistDTO, foundWishlist);
@@ -115,7 +116,7 @@ class WishlistServiceTest {
         final Wishlist wishlist = wishlistFactory.build(USER_ID, size);
         final WishlistDTO wishlistDTO = WishlistDTO.builder().wishlist(wishlist).build();
 
-        setupForAddIfNotFull(wishlist, size);
+        setup(wishlist, size);
 
         final WishlistDTO foundWishlist = wishlistService.remove(USER_ID, nextProductId);
         Assertions.assertEquals(wishlistDTO, foundWishlist);
@@ -123,27 +124,29 @@ class WishlistServiceTest {
     }
 
     @Test
-    void getProducts_withFullWishlist() {
+    void get_withFullWishlist() {
         final int size = 20;
         final Wishlist wishlist = wishlistFactory.build(USER_ID, size);
 
-        setupForAddIfNotFull(wishlist, size);
+        setup(wishlist, size);
 
-        final List<String> products = wishlistService.getProducts(USER_ID);
-        Assertions.assertEquals(size, products.size());
-        Assertions.assertEquals(wishlist.getProducts().stream().toList(), products);
+        final WishlistDTO resultDTO = wishlistService.get(USER_ID);
+        Assertions.assertEquals(size, resultDTO.getProducts().size());
+        Assertions.assertEquals(wishlist.getUserId(), resultDTO.getUserId());
+        Assertions.assertEquals(wishlist.getProducts(), resultDTO.getProducts());
     }
 
     @Test
-    void getProducts_withEmptyWishlist() {
+    void get_withEmptyWishlist() {
         final int size = 0;
         final Wishlist wishlist = wishlistFactory.build(USER_ID, size);
 
-        setupForAddIfNotFull(wishlist, size);
+        setup(wishlist, size);
 
-        final List<String> products = wishlistService.getProducts(USER_ID);
-        Assertions.assertEquals(size, products.size());
-        Assertions.assertEquals(wishlist.getProducts().stream().toList(), products);
+        final WishlistDTO wishlistDTO = wishlistService.get(USER_ID);
+        Assertions.assertEquals(size, wishlistDTO.getProducts().size());
+        Assertions.assertEquals(wishlist.getUserId(), wishlistDTO.getUserId());
+        Assertions.assertEquals(wishlist.getProducts(), wishlistDTO.getProducts());
     }
 
     @Test
@@ -151,7 +154,7 @@ class WishlistServiceTest {
         final int size = 20;
         final Wishlist wishlist = wishlistFactory.build(USER_ID, size);
 
-        setupForAddIfNotFull(wishlist, size, true);
+        setup(wishlist, size, true);
 
         final Boolean contains = wishlistService.contains(USER_ID, getLastProductId(size));
         Assertions.assertTrue(contains);
@@ -162,7 +165,7 @@ class WishlistServiceTest {
         final int size = 20;
         final Wishlist wishlist = wishlistFactory.build(USER_ID, size);
 
-        setupForAddIfNotFull(wishlist, size, false);
+        setup(wishlist, size, false);
 
         final Boolean contains = wishlistService.contains(USER_ID, getNextProductId(size));
         Assertions.assertFalse(contains);
@@ -173,7 +176,7 @@ class WishlistServiceTest {
         final int size = 0;
         final Wishlist wishlist = wishlistFactory.build(USER_ID, size);
 
-        setupForAddIfNotFull(wishlist, size, false);
+        setup(wishlist, size, false);
 
         final Boolean contains = wishlistService.contains(USER_ID, getNextProductId(size));
         Assertions.assertFalse(contains);

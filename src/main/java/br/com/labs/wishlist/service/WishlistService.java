@@ -7,7 +7,6 @@ import br.com.labs.wishlist.repository.WishlistRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
-import java.util.List;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
@@ -62,8 +61,8 @@ public class WishlistService {
         return saveAndMapToDTO(wishlist);
     }
 
-    public List<String> getProducts(final String userId) {
-        return wishlistRepository.getProducts(userId);
+    public WishlistDTO get(final String userId) {
+        return toDTO(wishlistRepository.findById(userId).orElse(createAnEmptyOne(userId)));
     }
 
     public Boolean contains(final String userId, final String productId) {
