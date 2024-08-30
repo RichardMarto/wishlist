@@ -1,5 +1,6 @@
-package br.com.labs.wishlist.model;
+package br.com.labs.wishlist.model.dto;
 
+import br.com.labs.wishlist.model.entity.Wishlist;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

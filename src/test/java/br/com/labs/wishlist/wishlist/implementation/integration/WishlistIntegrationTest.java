@@ -2,10 +2,10 @@ package br.com.labs.wishlist.wishlist.implementation.integration;
 
 import br.com.labs.wishlist.wishlist.MongoDBIntegrationTest;
 import br.com.labs.wishlist.wishlist.WishlistTest;
-import br.com.labs.wishlist.exceptions.FullWishlistException;
+import br.com.labs.wishlist.model.exceptions.FullWishlistException;
 import br.com.labs.wishlist.wishlist.implementation.WishlistBaseTest;
-import br.com.labs.wishlist.model.Wishlist;
-import br.com.labs.wishlist.model.WishlistDTO;
+import br.com.labs.wishlist.model.entity.Wishlist;
+import br.com.labs.wishlist.model.dto.WishlistDTO;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;

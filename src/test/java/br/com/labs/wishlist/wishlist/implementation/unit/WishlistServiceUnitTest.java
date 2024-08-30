@@ -1,12 +1,20 @@
 package br.com.labs.wishlist.wishlist.implementation.unit;
 
+import br.com.labs.wishlist.core.service.usecases.implementation.AddToWishlistUseCase;
+import br.com.labs.wishlist.core.service.usecases.implementation.GetWishlistUseCase;
+import br.com.labs.wishlist.core.service.usecases.implementation.RemoveFromWishlistUseCase;
+import br.com.labs.wishlist.core.service.usecases.implementation.WishlistContainsUseCase;
+import br.com.labs.wishlist.core.service.usecases.AddToWishlistPort;
+import br.com.labs.wishlist.core.service.usecases.GetWishlistPort;
+import br.com.labs.wishlist.core.service.usecases.RemoveFromWishlistPort;
+import br.com.labs.wishlist.core.service.usecases.WishlistContainsPort;
 import br.com.labs.wishlist.wishlist.WishlistTest;
-import br.com.labs.wishlist.exceptions.FullWishlistException;
+import br.com.labs.wishlist.model.exceptions.FullWishlistException;
 import br.com.labs.wishlist.wishlist.implementation.WishlistBaseTest;
-import br.com.labs.wishlist.model.Wishlist;
-import br.com.labs.wishlist.model.WishlistDTO;
-import br.com.labs.wishlist.repository.WishlistRepository;
-import br.com.labs.wishlist.service.WishlistService;
+import br.com.labs.wishlist.model.entity.Wishlist;
+import br.com.labs.wishlist.model.dto.WishlistDTO;
+import br.com.labs.wishlist.ports.output.WishlistPersistencePort;
+import br.com.labs.wishlist.core.service.WishlistService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
@@ -20,12 +28,20 @@ class WishlistServiceUnitTest extends WishlistBaseTest implements WishlistTest {
     protected static final String USER_ID = "user_id_1";
 
     private final WishlistService wishlistService;
-    private final WishlistRepository wishlistRepository;
+    private final WishlistPersistencePort wishlistPersistencePort;
 
     WishlistServiceUnitTest() {
         super();
-        this.wishlistRepository = Mockito.mock(WishlistRepository.class);
-        this.wishlistService = new WishlistService(wishlistRepository);
+        this.wishlistPersistencePort = Mockito.mock(WishlistPersistencePort.class);
+        AddToWishlistPort addToWishlistPort = new AddToWishlistUseCase(wishlistPersistencePort);
+        GetWishlistPort getWishlistPort = new GetWishlistUseCase(wishlistPersistencePort);
+        RemoveFromWishlistPort removeFromWishlistPort = new RemoveFromWishlistUseCase(wishlistPersistencePort);
+        WishlistContainsPort wishlistContainsPort = new WishlistContainsUseCase(wishlistPersistencePort);
+        this.wishlistService = new WishlistService(
+                addToWishlistPort,
+                getWishlistPort,
+                removeFromWishlistPort,
+                wishlistContainsPort);
     }
 
     private static Optional<Wishlist> ifContainsReturnsWishlist(Wishlist wishlist, Boolean contains) {
@@ -119,9 +135,9 @@ class WishlistServiceUnitTest extends WishlistBaseTest implements WishlistTest {
     @Override
     protected void setup(final String userId, final int size) {
         final Wishlist wishlist = build(userId, size);
-        Mockito.when(wishlistRepository.findById(Mockito.anyString())).thenReturn(Optional.of(wishlist));
-        Mockito.when(wishlistRepository.save(Mockito.any(Wishlist.class))).thenReturn(wishlist);
-        Mockito.when(wishlistRepository.findById(Mockito.anyString())).thenReturn(Optional.of(wishlist));
+        Mockito.when(wishlistPersistencePort.findById(Mockito.anyString())).thenReturn(Optional.of(wishlist));
+        Mockito.when(wishlistPersistencePort.save(Mockito.any(Wishlist.class))).thenReturn(wishlist);
+        Mockito.when(wishlistPersistencePort.findById(Mockito.anyString())).thenReturn(Optional.of(wishlist));
     }
 
     @Override

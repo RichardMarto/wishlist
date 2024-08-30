@@ -1,7 +1,7 @@
 package br.com.labs.wishlist.wishlist.factory;
 
-import br.com.labs.wishlist.exceptions.FullWishlistException;
-import br.com.labs.wishlist.model.Wishlist;
+import br.com.labs.wishlist.model.exceptions.FullWishlistException;
+import br.com.labs.wishlist.model.entity.Wishlist;
 
 import java.util.HashSet;
 

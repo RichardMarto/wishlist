@@ -1,4 +1,4 @@
-package br.com.labs.wishlist.exceptions;
+package br.com.labs.wishlist.model.exceptions;
 
 import lombok.Getter;
 
