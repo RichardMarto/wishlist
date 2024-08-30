@@ -1,5 +1,6 @@
 package br.com.labs.wishlist.wishlist.implementation.integration;
 
+import br.com.labs.wishlist.wishlist.MongoDBIntegrationTest;
 import br.com.labs.wishlist.wishlist.WishlistTest;
 import br.com.labs.wishlist.exceptions.FullWishlistException;
 import br.com.labs.wishlist.wishlist.implementation.WishlistBaseTest;
@@ -10,12 +11,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.test.web.server.LocalServerPort;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
-import org.springframework.test.context.DynamicPropertyRegistry;
-import org.springframework.test.context.DynamicPropertySource;
-import org.testcontainers.containers.MongoDBContainer;
 import org.testcontainers.junit.jupiter.Testcontainers;
-import org.testcontainers.utility.DockerImageName;
 
 import java.util.Random;
 
@@ -23,25 +21,16 @@ import java.util.Random;
         webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT
 )
 @Testcontainers
-public class WishlistIntegrationTest extends WishlistBaseTest implements WishlistTest {
+public class WishlistIntegrationTest extends WishlistBaseTest implements WishlistTest, MongoDBIntegrationTest {
     private static final String host = "http://localhost:";
-    private static final String api = "/api/wishlist";
+    private static final String api = "/api/v1/wishlist";
     private static final String USER_ID = "user_id_";
-    static MongoDBContainer mongoDBContainer = new MongoDBContainer(DockerImageName.parse("mongo:latest"))
-            .withExposedPorts(27017);
+
     private final Random random = new Random();
     @LocalServerPort
     private int port;
     @Autowired
     private TestRestTemplate restTemplate;
-
-    @DynamicPropertySource
-    static void containersProperties(DynamicPropertyRegistry registry) {
-        mongoDBContainer.start();
-        registry.add("spring.data.mongodb.host", mongoDBContainer::getHost);
-        registry.add("spring.data.mongodb.port", mongoDBContainer::getFirstMappedPort);
-    }
-
 
     @Test
     public void addIfNotFull_withEmptyWishlist() {
@@ -105,8 +94,9 @@ public class WishlistIntegrationTest extends WishlistBaseTest implements Wishlis
 
     @Override
     public WishlistDTO add(final String userId, final String productId) {
-        ResponseEntity<WishlistDTO> response = this.restTemplate.postForEntity(
-                host + port + api + "/add?userId=" + userId + "&productId=" + productId,
+        ResponseEntity<WishlistDTO> response = this.restTemplate.exchange(
+                host + port + api + "/products?userId=" + userId + "&productId=" + productId,
+                HttpMethod.PUT,
                 null,
                 WishlistDTO.class);
 
@@ -121,7 +111,7 @@ public class WishlistIntegrationTest extends WishlistBaseTest implements Wishlis
     @Override
     protected void remove(final String userId, final String productId) {
         this.restTemplate.delete(
-                host + port + api + "/remove?userId=" + userId + "&productId=" + productId,
+                host + port + api + "/products?userId=" + userId + "&productId=" + productId,
                 null,
                 WishlistDTO.class);
     }
@@ -136,7 +126,7 @@ public class WishlistIntegrationTest extends WishlistBaseTest implements Wishlis
     @Override
     protected Boolean contains(final String userId, final String productId) {
         return this.restTemplate.getForObject(
-                host + port + api + "/contains?userId=" + userId + "&productId=" + productId,
+                host + port + api + "/products?userId=" + userId + "&productId=" + productId,
                 Boolean.class);
     }
 

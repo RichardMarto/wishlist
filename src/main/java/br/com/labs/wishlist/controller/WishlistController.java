@@ -8,7 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/wishlist")
+@RequestMapping("/api/v1/wishlist")
 public class WishlistController {
 
     private final WishlistService wishlistService;
@@ -17,28 +17,29 @@ public class WishlistController {
         this.wishlistService = wishlistService;
     }
 
-    @PostMapping("/add")
-    public WishlistDTO add(@RequestParam final String userId, @RequestParam final String productId) {
-        return wishlistService.addIfNotFull(userId, productId);
-    }
-
-    @DeleteMapping("/remove")
-    public WishlistDTO remove(@RequestParam final String userId, @RequestParam final String productId) {
-        return wishlistService.remove(userId, productId);
-    }
-
     @GetMapping
-    public WishlistDTO get(@RequestParam final String userId) {
+    public WishlistDTO getProducts(@RequestParam final String userId) {
         return wishlistService.get(userId);
     }
 
-    @GetMapping("/contains")
-    public Boolean contains(@RequestParam final String userId, @RequestParam final String productId) {
+    @PutMapping("/products")
+    public WishlistDTO addProduct(@RequestParam final String userId, @RequestParam final String productId) {
+        return wishlistService.addIfNotFull(userId, productId);
+    }
+
+    @DeleteMapping("/products")
+    public WishlistDTO removeProduct(@RequestParam final String userId, @RequestParam final String productId) {
+        return wishlistService.remove(userId, productId);
+    }
+
+
+    @GetMapping("/products")
+    public Boolean containsProduct(@RequestParam final String userId, @RequestParam final String productId) {
         return wishlistService.contains(userId, productId);
     }
 
     @ExceptionHandler(FullWishlistException.class)
     public ResponseEntity<WishlistDTO> fullWishlist(FullWishlistException exception) {
-        return new ResponseEntity<WishlistDTO>(wishlistService.get(exception.getUserid()), HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(wishlistService.get(exception.getUserid()), HttpStatus.BAD_REQUEST);
     }
 }
