@@ -1,9 +1,9 @@
 package br.com.labs.wishlist.wishlist.implementation;
 
+import br.com.labs.wishlist.model.dto.WishlistDTO;
+import br.com.labs.wishlist.model.entity.Wishlist;
 import br.com.labs.wishlist.model.exceptions.FullWishlistException;
 import br.com.labs.wishlist.wishlist.factory.WishlistFactory;
-import br.com.labs.wishlist.model.entity.Wishlist;
-import br.com.labs.wishlist.model.dto.WishlistDTO;
 import org.junit.jupiter.api.Assertions;
 
 public abstract class WishlistBaseTest {

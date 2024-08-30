@@ -1,11 +1,11 @@
 package br.com.labs.wishlist.wishlist.implementation.integration;
 
+import br.com.labs.wishlist.model.dto.WishlistDTO;
+import br.com.labs.wishlist.model.entity.Wishlist;
+import br.com.labs.wishlist.model.exceptions.FullWishlistException;
 import br.com.labs.wishlist.wishlist.MongoDBIntegrationTest;
 import br.com.labs.wishlist.wishlist.WishlistTest;
-import br.com.labs.wishlist.model.exceptions.FullWishlistException;
 import br.com.labs.wishlist.wishlist.implementation.WishlistBaseTest;
-import br.com.labs.wishlist.model.entity.Wishlist;
-import br.com.labs.wishlist.model.dto.WishlistDTO;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -104,8 +104,7 @@ public class WishlistIntegrationTest extends WishlistBaseTest implements Wishlis
             throw new FullWishlistException(userId, productId);
         }
 
-        WishlistDTO wishlistDTO = response.getBody();
-        return wishlistDTO;
+        return response.getBody();
     }
 
     @Override
@@ -137,8 +136,6 @@ public class WishlistIntegrationTest extends WishlistBaseTest implements Wishlis
     @Override
     protected void setup(final String userId, int size) {
         final Wishlist wishlist = build(userId, size);
-        wishlist.getProducts().forEach(product -> {
-            add(userId, product);
-        });
+        wishlist.getProducts().forEach(product -> add(userId, product));
     }
 }

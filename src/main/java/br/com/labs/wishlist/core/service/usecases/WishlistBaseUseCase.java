@@ -20,11 +20,11 @@ public class WishlistBaseUseCase {
                 .build();
     }
 
-    protected WishlistDTO saveAndMapToDTO(final Wishlist wishlist) {
-        return toDTO(wishlistPersistencePort.save(wishlist));
-    }
-
     protected static Wishlist createAnEmptyOne(final String userId) {
         return Wishlist.builder().userId(userId).products(HashSet.newHashSet(0)).build();
+    }
+
+    protected WishlistDTO saveAndMapToDTO(final Wishlist wishlist) {
+        return toDTO(wishlistPersistencePort.save(wishlist));
     }
 }

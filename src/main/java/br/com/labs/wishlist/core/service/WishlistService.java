@@ -4,9 +4,8 @@ import br.com.labs.wishlist.core.service.usecases.AddToWishlistPort;
 import br.com.labs.wishlist.core.service.usecases.GetWishlistPort;
 import br.com.labs.wishlist.core.service.usecases.RemoveFromWishlistPort;
 import br.com.labs.wishlist.core.service.usecases.WishlistContainsPort;
-import br.com.labs.wishlist.ports.input.*;
 import br.com.labs.wishlist.model.dto.WishlistDTO;
-import lombok.extern.log4j.Log4j2;
+import br.com.labs.wishlist.ports.input.WishlistServiceInputPort;
 import org.springframework.stereotype.Service;
 
 @Service

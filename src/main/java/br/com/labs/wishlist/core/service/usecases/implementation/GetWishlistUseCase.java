@@ -1,8 +1,8 @@
 package br.com.labs.wishlist.core.service.usecases.implementation;
 
+import br.com.labs.wishlist.core.service.usecases.GetWishlistPort;
 import br.com.labs.wishlist.core.service.usecases.WishlistBaseUseCase;
 import br.com.labs.wishlist.model.dto.WishlistDTO;
-import br.com.labs.wishlist.core.service.usecases.GetWishlistPort;
 import br.com.labs.wishlist.ports.output.WishlistPersistencePort;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
