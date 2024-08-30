@@ -48,7 +48,7 @@ public class WishlistService {
     }
 
     public WishlistDTO addIfNotFull(final String userId, final String productId) {
-        log.debug("WishlistService.addIfNotFull: {", "userId: ", userId, "productId: ", productId, "}");
+        log.info("WishlistService.addIfNotFull: {userId: {}, productId: {}}", userId, productId);
         if (isFull(userId)) {
             throw new FullWishlistException(userId, productId);
         } else {
@@ -57,8 +57,7 @@ public class WishlistService {
     }
 
     public WishlistDTO remove(final String userId, final String productId) {
-        log.debug("WishlistService.remove: {", "userId: ", userId, "productId: ", productId, "}");
-
+        log.info("WishlistService.remove: {userId: {}, productId: {}}", userId, productId);
         final Wishlist wishlist = wishlistRepository.findById(userId)
                 .map(remove(productId))
                 .orElse(createAnEmptyOne(userId));
@@ -67,14 +66,14 @@ public class WishlistService {
     }
 
     public WishlistDTO get(final String userId) {
-        log.debug("WishlistService.get: {", "userId: ", userId, "}");
+        log.info("WishlistService.get: {userId: {}}", userId);
         return wishlistRepository.findById(userId)
                 .map(WishlistService::toDTO)
                 .orElseGet(() -> toDTO(createAnEmptyOne(userId)));
     }
 
     public Boolean contains(final String userId, final String productId) {
-        log.debug("WishlistService.contains: {", "userId: ", userId, "productId: ", productId, "}");
+        log.info("WishlistService.contains: {userId: {}, productId: {}}", userId, productId);
         return wishlistRepository.findById(userId).map(wishlist -> wishlist.getProducts().contains(productId)).orElse(Boolean.FALSE);
     }
 
