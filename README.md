@@ -28,7 +28,7 @@ For local setup, you'll need install a JDK 22 manually.
 `$ ./gradlew bootRun --args='--spring.profiles.active=dev'`
 
 ### Run all tests:
-`$ ./gradlew :test'`
+`$ ./gradlew :test`
 
 ### Run a single test suite tests:
 `$ ./gradlew :test --tests "br.com.labs.wishlist.wishlist.implementation.unit.WishlistServiceUnitTest"`
