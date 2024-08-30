@@ -1,0 +1,57 @@
+= Wishlist API V1
+
+This assumes your service is running at http://localhost:8080!
+
+== Resources
+
+=== /wishlist
+
+The available methods are:
+
+==== **Get**
+
+> This method allows the user to get the state of a wishlist based on the usersId.
+
+.request
+include::{snippets}/get/http-request.adoc[]
+.curl
+include::{snippets}/get/curl-request.adoc[]
+.response
+include::{snippets}/get/http-response.adoc[]
+
+=== /wishlist/products
+
+The available methods are:
+
+==== **Put**
+
+> This method allows the user to add a new product in the wishlist.
+
+.request
+include::{snippets}/add/http-request.adoc[]
+.curl
+include::{snippets}/add/curl-request.adoc[]
+.response
+include::{snippets}/add/http-response.adoc[]
+
+==== **Delete**
+
+> This method allows the user to remove a product from the wishlist.
+
+.request
+include::{snippets}/remove/http-request.adoc[]
+.curl
+include::{snippets}/remove/curl-request.adoc[]
+.response
+include::{snippets}/remove/http-response.adoc[]
+
+==== **Get**
+
+> This method allows the user verify if a product is already in the wishlist.
+
+.request
+include::{snippets}/contains/http-request.adoc[]
+.curl
+include::{snippets}/contains/curl-request.adoc[]
+.response
+include::{snippets}/contains/http-response.adoc[]
