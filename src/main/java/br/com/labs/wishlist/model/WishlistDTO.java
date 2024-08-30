@@ -1,14 +1,18 @@
 package br.com.labs.wishlist.model;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.HashSet;
 
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class WishlistDTO {
-    private final String userId;
-    private final HashSet<String> products;
+    private String userId;
+    private HashSet<String> products;
 
     @Builder
     WishlistDTO(final Wishlist wishlist) {

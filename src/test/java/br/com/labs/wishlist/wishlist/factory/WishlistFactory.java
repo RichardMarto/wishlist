@@ -1,4 +1,4 @@
-package br.com.labs.wishlist.factory;
+package br.com.labs.wishlist.wishlist.factory;
 
 import br.com.labs.wishlist.exceptions.FullWishlistException;
 import br.com.labs.wishlist.model.Wishlist;
@@ -9,10 +9,11 @@ public class WishlistFactory {
 
     private static final String PRODUCT_ID_PREFIX = "product_id_";
     private static final Integer PRODUCT_ID_SIZE_BEFORE_THE_NUMBERS = 11;
+    private static final Integer MAX_SIZE = 20;
 
-    public Wishlist build(final String userId, final Integer size) {
+    public Wishlist build(final String userId, final long size) {
         if (size > 20) {
-            throw new FullWishlistException(userId);
+            throw new FullWishlistException(userId, PRODUCT_ID_PREFIX + MAX_SIZE);
         } else {
             final HashSet<String> products = new HashSet<>();
             final StringBuilder productIdBuilder = new StringBuilder();

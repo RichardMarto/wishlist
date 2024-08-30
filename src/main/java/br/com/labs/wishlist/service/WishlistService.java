@@ -4,12 +4,14 @@ import br.com.labs.wishlist.exceptions.FullWishlistException;
 import br.com.labs.wishlist.model.Wishlist;
 import br.com.labs.wishlist.model.WishlistDTO;
 import br.com.labs.wishlist.repository.WishlistRepository;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
+@Log4j2
 @Service
 public class WishlistService {
 
@@ -38,7 +40,7 @@ public class WishlistService {
     }
 
     private static Wishlist createAnEmptyOne(final String userId) {
-        return Wishlist.builder().userId(userId).build();
+        return Wishlist.builder().userId(userId).products(HashSet.newHashSet(0)).build();
     }
 
     private static Function<Wishlist, Wishlist> remove(final String productId) {
@@ -46,14 +48,17 @@ public class WishlistService {
     }
 
     public WishlistDTO addIfNotFull(final String userId, final String productId) {
+        log.debug("WishlistService.addIfNotFull: {", "userId: ", userId, "productId: ", productId, "}");
         if (isFull(userId)) {
-            throw new FullWishlistException(userId);
+            throw new FullWishlistException(userId, productId);
         } else {
             return add(userId, productId);
         }
     }
 
     public WishlistDTO remove(final String userId, final String productId) {
+        log.debug("WishlistService.remove: {", "userId: ", userId, "productId: ", productId, "}");
+
         final Wishlist wishlist = wishlistRepository.findById(userId)
                 .map(remove(productId))
                 .orElse(createAnEmptyOne(userId));
@@ -62,15 +67,19 @@ public class WishlistService {
     }
 
     public WishlistDTO get(final String userId) {
-        return toDTO(wishlistRepository.findById(userId).orElse(createAnEmptyOne(userId)));
+        log.debug("WishlistService.get: {", "userId: ", userId, "}");
+        return wishlistRepository.findById(userId)
+                .map(WishlistService::toDTO)
+                .orElseGet(() -> toDTO(createAnEmptyOne(userId)));
     }
 
     public Boolean contains(final String userId, final String productId) {
-        return wishlistRepository.contains(userId, productId).isPresent();
+        log.debug("WishlistService.contains: {", "userId: ", userId, "productId: ", productId, "}");
+        return wishlistRepository.findById(userId).map(wishlist -> wishlist.getProducts().contains(productId)).orElse(Boolean.FALSE);
     }
 
-    public Boolean isFull(final String userId) {
-        return wishlistRepository.count(userId) >= 20;
+    private Boolean isFull(final String userId) {
+        return wishlistRepository.findById(userId).map(wishlist -> wishlist.getProducts().size() >= 20).orElse(Boolean.FALSE);
     }
 
     private WishlistDTO add(String userId, String productId) {
